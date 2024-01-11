@@ -1,6 +1,7 @@
 import type { RequestHandler } from "./$types";
 
 export const GET = (async (event) => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   const title = await fetch('https://hacker-news.firebaseio.com/v0/newstories.json')
     .then(response => response.json())
     .then(async storyIds => {
@@ -14,7 +15,7 @@ export const GET = (async (event) => {
         })
     })
   event.setHeaders({
-    'Cache-Control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=59',
+    'Cache-Control': 'public, max-age=60, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400',
   })
   return new Response(JSON.stringify({ title }))
 }) satisfies RequestHandler;
